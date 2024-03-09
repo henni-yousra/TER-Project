@@ -1,0 +1,106 @@
+from modules.System import System
+from modules.node import node
+from modules.role import role
+from modules.input import input
+from modules.protBreakCosts import protBreakCosts
+import json
+
+with open('./data/Medium.json', 'r') as file:
+    data = json.load(file)
+
+listofnodes = [] 
+for anode in data['nodes']:
+    listofroles = []
+    for arole in anode['roles']:
+        nrole = role(arole['name'],
+                    arole['protocol'],
+                    arole['type'],
+                    arole['categ'],
+                    arole['dataBreakCost'],
+                    arole['mCodeInjectCost'],
+                    arole['bCodeInjectCost'],
+                    arole['nCodeInjectCost'],
+                    arole['remoteSecrTheftCost'],
+                    arole['sessionProtectSecretIndex'])
+        listofroles.append(nrole)
+    listofinputs = []
+    for ainput in anode['inputs']:
+        listofprotBreakCosts = []
+        for aprotBreakCost in ainput['protBreakCosts']:
+          nprotBreakCosts = protBreakCosts(aprotBreakCost[0],
+                                          aprotBreakCost[1],
+                                          aprotBreakCost[2],
+                                          aprotBreakCost[3],
+                                          aprotBreakCost[4])
+          listofprotBreakCosts.append(nprotBreakCosts)
+        ninput = input(ainput['sourceNodeIndex'],
+                      ainput['debug_sourceNodeName'],
+                      ainput['position'],
+                      ainput['roleIndex'],
+                      ainput['isOpen'],
+                      listofprotBreakCosts)
+        listofinputs.append(ninput)  
+    nnode = node(anode['name'], 
+                anode['softwareClass'],
+                anode['text'], 
+                anode['kernelIndex'], 
+                anode['nbRoles'], 
+                anode['nbInputs'], 
+                anode['nodeType'], 
+                anode['plausThreshold'], 
+                anode['actThreshold'], 
+                anode['secrTheftCost'], 
+                anode['debug_fallbackActionNames'],
+                anode['secrStore'],
+                anode['monBypassCost'],
+                listofroles,
+                listofinputs,
+                anode['fallbackActionIndex'])
+    listofnodes.append(nnode)
+
+stolenSecrets = [False, False, False, False, False]
+nodesStates = ['sF',
+               'sF',
+               'sM',
+               'sF',
+               'sF',
+               'sF',
+               'sF',
+               'sF',
+               'sF',
+               'sF',
+               'sF',
+               'sF',
+               'sF',
+               'sF',
+               'sF',
+               'sF',
+               'sF',
+               'sF']
+
+NodesKernels = [None ,3,None,None,None,7,None,None,None,None,11,None,None,None,12,13,0]
+mySystem = System(data['nbNodes'],
+                  data['nbSecrets'], 
+                  data['secrets'], 
+                  listofnodes, 
+                  data['fallbackActions'],
+                  stolenSecrets,
+                  nodesStates,
+                  NodesKernels)
+
+for anode in mySystem.nodes:
+    '''
+    print('the node name is:',anode.name)
+    print('his secret store is', anode.secrStore)
+    print('his roles are:')
+    for arole in anode.roles:
+        print(arole.name, 'categorie', arole.categ)
+        # print('sessionProtectSecretIndex',arole.sessionProtectSecretIndex)
+    
+    print('\nhis inputs sourceNodeIndex are:')
+    for ainput in anode.inputs:
+        print(ainput.sourceNodeIndex, 'that have the debug name:', ainput.debug_sourceNodeName)
+    print('-'*100)
+
+    # print(mySystem.nodes[0].roles.sessionProtectSecretIndex)
+    '''

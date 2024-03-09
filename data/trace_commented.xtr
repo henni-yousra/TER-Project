@@ -1,0 +1,220 @@
+4
+4
+4
+4
+4
+4
+4
+4
+4
+4
+4
+4
+4
+4
+4
+4
+4
+1
+.
+0
+1
+0
+.
+. first separator
+0
+0
+0
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+.
+0
+0
+2
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+.
+0
+1
+0
+.
+. second separator = initial state
+0  key 0
+0  key 1
+0  key 2
+0  key 3
+0  key 4
+0  status automaton 0
+0  status automaton 1
+1  status automaton 2
+0  status automaton 3
+0  status automaton 4
+0  status automaton 5
+0  status automaton 6
+0  status automaton 7
+0  status automaton 8
+0  status automaton 9
+0  status automaton 10
+0  status automaton 11
+0  status automaton 12
+0  status automaton 13
+0  status automaton 14
+0  status automaton 15
+0  status automaton 16
+0 cumulated cost
+0 number of steps
+.
+17 1 ;
+0 10 ;
+1 10 ;
+2 12 ;
+3 10 ;
+4 10 ;
+5 10 ;
+6 10 ;
+7 10 ;
+8 10 ;
+9 10 ;
+10 10 ;
+11 10 ;
+12 10 ;
+13 10 ;
+14 10 ;
+15 10 ;
+16 10 ;
+.
+0
+0
+2
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+3
+0
+.
+0
+1
+0
+.
+. Third separator, state 1 begins below
+0  key 0
+0  key 1
+0  key 2
+0  key 3
+0  key 4
+0 status automaton 0
+0 status automaton 1
+1 status automaton 2
+0 status automaton 3
+0 status automaton 4
+0 status automaton 5
+0 status automaton 6
+0 status automaton 7
+0 status automaton 8
+0 status automaton 9
+0 status automaton 10
+0 status automaton 11
+0 status automaton 12
+0 status automaton 13
+0 status automaton 14
+0 status automaton 15
+2 status automaton 16
+55 cumulated cost
+1 number of steps
+.
+16 14 ;
+.
+0
+0
+2
+0
+0
+0
+0
+0
+0
+0
+3
+0
+0
+0
+0
+0
+3
+0
+.
+0
+1
+0
+.
+. 4th separator, state 2 begins 
+0  key 0
+0
+0
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+0
+0
+2
+0
+0
+0
+0
+0
+2
+80 cumulated cost
+2 number of steps
+.
+10 14 ;
+.
+.
