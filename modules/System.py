@@ -63,9 +63,6 @@ class System:
 
                 elif node.roles[ainput.roleIndex].categ == 'optional'and self.nodesStates[ainput.sourceNodeIndex] == 'sB':
                     subsetRb += 1
-                    if subsetRb > node.plausThreshold:
-                        print("condition 1.2 two checked")
-                        cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
 
                 elif self.nodesStates[ainput.sourceNodeIndex] == 'sM':
                     cumulatedcost += node.roles[ainput.roleIndex].mCodeInjectCost
@@ -79,16 +76,31 @@ class System:
 
                 elif node.roles[ainput.roleIndex].categ == 'optional'and self.nodesStates[ainput.sourceNodeIndex] == 'sB':
                     subsetRb += 1
-                    cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
+                    
 
                 elif self.nodesStates[ainput.sourceNodeIndex] == 'sM':
                     cumulatedcost += node.roles[ainput.roleIndex].mCodeInjectCost #25
                     print("condition three checked")
                 
-                #cumulatedcost += ainput.protBreakCosts[2] #30
+                cumulatedcost += ainput.protBreakCosts.theft
             
             else : #ainput.position == 'mitm'
                 pass
+
+        for ainput in node.inputs:
+            if ( ainput.position == 'peer') : # and (ainput.isOpen)
+                if node.roles[ainput.roleIndex].categ == 'optional'and self.nodesStates[ainput.sourceNodeIndex] == 'sB':
+                    if subsetRb > node.plausThreshold:
+                        print("condition 1.2 two checked")
+                        cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
+                        
+            elif ( ainput.position == 'side') :
+                if node.roles[ainput.roleIndex].categ == 'optional'and self.nodesStates[ainput.sourceNodeIndex] == 'sB':
+                    if subsetRb > node.plausThreshold:
+                            print("condition 1.2 two checked")
+                            cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
+        print(cumulatedcost)           
+
 
                 
   

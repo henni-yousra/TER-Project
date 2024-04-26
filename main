@@ -25,21 +25,16 @@ for anode in data['nodes']:
         listofroles.append(nrole)
     listofinputs = []
     for ainput in anode['inputs']:
-        listofprotBreakCosts = []
-        for aprotBreakCost in ainput['protBreakCosts']:
-          nprotBreakCosts = protBreakCosts(aprotBreakCost[0],
-                                          aprotBreakCost[1],
-                                          aprotBreakCost[2],
-                                          aprotBreakCost[3],
-                                          aprotBreakCost[4])
-          listofprotBreakCosts.append(nprotBreakCosts)
         ninput = input(ainput['sourceNodeIndex'],
                       ainput['debug_sourceNodeName'],
                       ainput['position'],
                       ainput['roleIndex'],
                       ainput['isOpen'],
-                      listofprotBreakCosts)
-        #print(listofprotBreakCosts)
+                      protBreakCosts(ainput['protBreakCosts']['destruct'],
+                                    ainput['protBreakCosts']['theft'],
+                                    ainput['protBreakCosts']['tunnelProtocol'], 
+                                    ainput['protBreakCosts']['tunnelDecrypt'], 
+                                    ainput['protBreakCosts']['tunnelDestroy']))
         listofinputs.append(ninput)  
     nnode = node(anode['name'], 
                 anode['softwareClass'],
@@ -91,12 +86,11 @@ mySystem = System(data['nbNodes'],
 
 #print(mySystem.stolenSecrets)
 #print(mySystem.nodesStates)
-for anode in mySystem.nodes:
+'''for anode in mySystem.nodes:
     print(anode.name)
     for aninput in anode.inputs:
         print(aninput.position)
-        for aprotBreakCoasts in aninput.protBreakCosts:
-            print(aprotBreakCoasts.theft)
+        print(aninput.protBreakCosts.theft)'''
 for anode in mySystem.nodes:
     '''
     print('the node name is:',anode.name)
@@ -114,4 +108,4 @@ for anode in mySystem.nodes:
     # print(mySystem.nodes[0].roles.sessionProtectSecretIndex)
     '''
     #mySystem.TransitionOne(anode)
-    #mySystem.TransitionTwo(anode)
+    mySystem.TransitionTwo(anode)
