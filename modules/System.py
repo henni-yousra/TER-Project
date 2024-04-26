@@ -27,20 +27,23 @@ class System:
                         cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
 
                 elif node.roles[ainput.roleIndex].categ == 'optional' and (self.nodesStates[ainput.sourceNodeIndex] == 'sN' or self.nodesStates[ainput.sourceNodeIndex] == 'sB'):
-                    subsetR += 1
-                    if (self.nodesStates[ainput.sourceNodeIndex] == 'sN'):
-                        cumulatedcost += node.roles[ainput.roleIndex].nCodeInjectCost
-                    else:
-                        cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
+                    subsetR += 1 
 
                 elif self.nodesStates[ainput.sourceNodeIndex] == 'sM':
                     cumulatedcost += node.roles[ainput.roleIndex].mCodeInjectCost
                     print("condition three checked")
-                    
-        if sum(node.inputs) - subsetR < node.actThreshold:
-            print("condition two checked")
-
-        print(subsetR)
+        for ainput in node.inputs:
+            if ( ainput.position == 'peer') : 
+                if node.roles[ainput.roleIndex].categ == 'optional' and (self.nodesStates[ainput.sourceNodeIndex] == 'sN' or self.nodesStates[ainput.sourceNodeIndex] == 'sB'):
+                    if (self.nodesStates[ainput.sourceNodeIndex] == 'sN'):
+                        if  sum(node.inputs) - subsetR < node.actThreshold:
+                            print("condition two checked")
+                            cumulatedcost += node.roles[ainput.roleIndex].nCodeInjectCost
+                    else:
+                        if  sum(node.inputs) - subsetR < node.actThreshold:
+                            print("condition two checked")
+                            cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
+        #print(subsetR)
         print(cumulatedcost)
 
 
@@ -60,7 +63,9 @@ class System:
 
                 elif node.roles[ainput.roleIndex].categ == 'optional'and self.nodesStates[ainput.sourceNodeIndex] == 'sB':
                     subsetRb += 1
-                    cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
+                    if subsetRb > node.plausThreshold:
+                        print("condition 1.2 two checked")
+                        cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
 
                 elif self.nodesStates[ainput.sourceNodeIndex] == 'sM':
                     cumulatedcost += node.roles[ainput.roleIndex].mCodeInjectCost
@@ -80,15 +85,13 @@ class System:
                     cumulatedcost += node.roles[ainput.roleIndex].mCodeInjectCost #25
                     print("condition three checked")
                 
-                cumulatedcost += ainput.protBreakCosts.theft #30
+                #cumulatedcost += ainput.protBreakCosts[2] #30
             
             else : #ainput.position == 'mitm'
                 pass
 
                 
-        if subsetRb > node.plausThreshold:
-            print("condition 1.2 two checked")
-
+  
 
         
 
@@ -138,7 +141,7 @@ class System:
         
         # update self.stolenSecrets 
                 
-        self.nodesStates[ainput.sourceNodeIndex] = 'sM'
+        self.nodesStates[ainput.sourceNodeIndex] = 'sM' 
 
 
 

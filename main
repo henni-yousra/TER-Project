@@ -39,6 +39,7 @@ for anode in data['nodes']:
                       ainput['roleIndex'],
                       ainput['isOpen'],
                       listofprotBreakCosts)
+        #print(listofprotBreakCosts)
         listofinputs.append(ninput)  
     nnode = node(anode['name'], 
                 anode['softwareClass'],
@@ -90,7 +91,12 @@ mySystem = System(data['nbNodes'],
 
 #print(mySystem.stolenSecrets)
 #print(mySystem.nodesStates)
-
+for anode in mySystem.nodes:
+    print(anode.name)
+    for aninput in anode.inputs:
+        print(aninput.position)
+        for aprotBreakCoasts in aninput.protBreakCosts:
+            print(aprotBreakCoasts.theft)
 for anode in mySystem.nodes:
     '''
     print('the node name is:',anode.name)
@@ -107,4 +113,5 @@ for anode in mySystem.nodes:
 
     # print(mySystem.nodes[0].roles.sessionProtectSecretIndex)
     '''
-    mySystem.TransitionOne(anode)
+    #mySystem.TransitionOne(anode)
+    #mySystem.TransitionTwo(anode)
