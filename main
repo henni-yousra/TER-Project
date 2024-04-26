@@ -88,6 +88,9 @@ mySystem = System(data['nbNodes'],
                   nodesStates,
                   NodesKernels)
 
+#print(mySystem.stolenSecrets)
+#print(mySystem.nodesStates)
+
 for anode in mySystem.nodes:
     '''
     print('the node name is:',anode.name)
@@ -104,3 +107,4 @@ for anode in mySystem.nodes:
 
     # print(mySystem.nodes[0].roles.sessionProtectSecretIndex)
     '''
+    mySystem.TransitionOne(anode)

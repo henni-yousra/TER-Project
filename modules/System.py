@@ -5,59 +5,113 @@ class System:
         self.secrets = secrets
         self.nodes = nodes
         self.fallbackActions = fallbackActions
-        self.stolenSecrets = stolenSecrets
-        self.nodesStates = nodesStates
+        self.stolenSecrets = stolenSecrets  ####
+        self.nodesStates = nodesStates  ####
         self.NodesKernels = NodesKernels
 
 
 
-
+#the point here is not to change the state of the node it's already happening in uppaal, we just need to see if the conditions where checked or not 
     def TransitionOne(self, node):
         # F to N
         subsetR = 0
         cumulatedcost = 0
 
         for ainput in node.inputs:
-            if ainput.isOpen:
-                if node.roles[ainput.roleIndex].categ == 'mandatory' and self.nodesStates[self.nodes.index(node.name)] == 'sB':
-                    self.nodesStates[self.nodes.index(node.name)] = 'sN'
-                    break
-                elif self.nodesStates[self.nodes.index(node.name)] == 'sM':
+            if ( ainput.position == 'peer') : # and (ainput.isOpen)
+                if node.roles[ainput.roleIndex].categ == 'mandatory' and (self.nodesStates[ainput.sourceNodeIndex] == 'sN' or self.nodesStates[ainput.sourceNodeIndex] == 'sB'):
+                    print("condition one checked") 
+                    if (self.nodesStates[ainput.sourceNodeIndex] == 'sN'):
+                        cumulatedcost += node.roles[ainput.roleIndex].nCodeInjectCost
+                    else:
+                        cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
 
-                    cumulatedcost += node.roles[ainput.roleIndex].mCodeInjectCost
-                    
-                    self.nodesStates[self.nodes.index(node.name)] = 'sN'
-                elif node.roles[ainput.roleIndex].categ == 'optional' and self.nodesStates[self.nodes.index(node.name)] == 'sB':
+                elif node.roles[ainput.roleIndex].categ == 'optional' and (self.nodesStates[ainput.sourceNodeIndex] == 'sN' or self.nodesStates[ainput.sourceNodeIndex] == 'sB'):
                     subsetR += 1
+                    if (self.nodesStates[ainput.sourceNodeIndex] == 'sN'):
+                        cumulatedcost += node.roles[ainput.roleIndex].nCodeInjectCost
+                    else:
+                        cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
 
-                if subsetR > node.actThreshold:
-                    self.nodesStates[self.nodes.index(node.name)] = 'sN'
-                else:
-                    print(":')")
-            else:
-                if ainput.position == 'peer':
-                    # print("we can do a transition")
-                    pass
-                else:
-                    # print("we can't do a transition")
-                    pass
+                elif self.nodesStates[ainput.sourceNodeIndex] == 'sM':
+                    cumulatedcost += node.roles[ainput.roleIndex].mCodeInjectCost
+                    print("condition three checked")
+                    
+        if sum(node.inputs) - subsetR < node.actThreshold:
+            print("condition two checked")
+
         print(subsetR)
+        print(cumulatedcost)
+
+
 
     def TransitionTwo(self, node):
-        pass
+        #F to B
+        subsetRb = 0
+        cumulatedcost = 0
+
+        for ainput in node.inputs:
+            if ( ainput.position == 'peer') : # and (ainput.isOpen)
+                #if iterpretation
+                if node.roles[ainput.roleIndex].categ == 'mandatory' and self.nodesStates[ainput.sourceNodeIndex] == 'sB':
+                    
+                    cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
+                    print("condition 1.1 two checked")
+
+                elif node.roles[ainput.roleIndex].categ == 'optional'and self.nodesStates[ainput.sourceNodeIndex] == 'sB':
+                    subsetRb += 1
+                    cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
+
+                elif self.nodesStates[ainput.sourceNodeIndex] == 'sM':
+                    cumulatedcost += node.roles[ainput.roleIndex].mCodeInjectCost
+                    print("condition three checked")
+
+            elif ( ainput.position == 'side') :
+                if node.roles[ainput.roleIndex].categ == 'mandatory' and self.nodesStates[ainput.sourceNodeIndex] == 'sB':
+                    
+                    cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
+                    print("condition 1.1 two checked")
+
+                elif node.roles[ainput.roleIndex].categ == 'optional'and self.nodesStates[ainput.sourceNodeIndex] == 'sB':
+                    subsetRb += 1
+                    cumulatedcost += node.roles[ainput.roleIndex].bCodeInjectCost
+
+                elif self.nodesStates[ainput.sourceNodeIndex] == 'sM':
+                    cumulatedcost += node.roles[ainput.roleIndex].mCodeInjectCost #25
+                    print("condition three checked")
+                
+                cumulatedcost += ainput.protBreakCosts.theft #30
+            
+            else : #ainput.position == 'mitm'
+                pass
+
+                
+        if subsetRb > node.plausThreshold:
+            print("condition 1.2 two checked")
+
+
+        
 
 
 
     def TransitionThree(self, node):
         #F to M
 
-        if  self.nodesStates[self.nodes.index(node.name)] == 'sF':
-        #just checking if we are in functional state first enable the transition then 
-            for ainput in node.inputs:
-                if self.nodesStates[ainput.sourceNodeIndex] == 'sM':
+        for ainput in node.inputs:
+            if(ainput.position == 'peer'):
+                if(self.nodesStates[ainput.sourceNodeIndex] == 'sM'):
+                        
+                    cumulatedcost += node.roles[ainput.roleIndex].mCodeInjectCost 
                     
-                    self.nodesStates[self.nodes.index(node.name)] = 'sM'
-                    break
+            elif ( ainput.position == 'side') :
+
+                cumulatedcost += node.roles[ainput.roleIndex].mCodeInjectCost 
+                cumulatedcost += ainput.protBreakCosts.theft 
+
+            else : #ainput.position == 'mitm'
+                pass
+
+            
 
 
     def TransitionFour(self, node):
@@ -74,7 +128,7 @@ class System:
         
         # update self.stolenSecrets 
             
-        self.nodesStates[self.nodes.index(node.name)] = 'sF'
+        self.nodesStates[ainput.sourceNodeIndex] = 'sF'
 
     def TransitionFive(self, node):
         # M to M
@@ -84,7 +138,7 @@ class System:
         
         # update self.stolenSecrets 
                 
-        self.nodesStates[self.nodes.index(node.name)] = 'sM'
+        self.nodesStates[ainput.sourceNodeIndex] = 'sM'
 
 
 
@@ -106,10 +160,22 @@ class System:
             'Number of steps': 1
         }
 
+        #somehow extract the info that RevProxy went from sF to sB 
+        #with a cumulated cost of 55 
+
         if stepinitials['stolenSecrets'] == stepresults['stolenSecrets']:
             # it means we have a state change 
             
             #compare and find which state has changed 
-            #for a given state change if it changed from 'sF' to 'sB' 
-            #loopcheck using reverseTransionDetection to find which transition happend 
+
             pass
+        else:
+            # it means states didn't change but we have a stolen key 
+            pass
+
+
+        #for a given state change if it changed from 'sF' to 'sB' 
+        #loopcheck using reverseTransionDetection to find which transition happend 
+
+        #next step figure how the cost is being calculated 
+        
